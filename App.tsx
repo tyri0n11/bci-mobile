@@ -28,7 +28,7 @@ export default function App() {
                 iconName = focused ? 'settings' : 'settings-outline';
               }
 
-              return <Ionicons name={iconName} size={size} color={color} />;
+              return <Ionicons name={iconName as any} size={size} color={color} />;
             },
             tabBarActiveTintColor: '#6366f1',
             tabBarInactiveTintColor: 'gray',
