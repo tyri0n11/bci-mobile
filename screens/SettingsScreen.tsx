@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Switch, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card, Avatar, Divider } from 'react-native-paper';
+import DeviceStatusScreen from './DeviceStatusScreen';
 
 const SettingsScreen = () => {
+  const [isModalVisible, setModalVisible] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const [dataSharing, setDataSharing] = useState(true);
+
+  const handleConnectDevice = () => {
+    setModalVisible(true);
+  };
 
   const handleLogout = () => {
     Alert.alert(
@@ -35,7 +41,7 @@ const SettingsScreen = () => {
             source={{ uri: 'https://randomuser.me/api/portraits/women/17.jpg' }} 
           />
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>Hello Mom</Text>
+            <Text style={styles.profileName}>Hello Thuan</Text>
             <Text style={styles.profileEmail}>ntthuan@senior.dev</Text>
           </View>
         </View>
@@ -79,15 +85,27 @@ const SettingsScreen = () => {
         
         <View style={styles.settingItem}>
           <View style={styles.settingInfo}>
+            <Ionicons name="bluetooth-outline" size={24} color="#6366f1" />
+            <Text style={styles.settingText}>Connect Device</Text>
+          </View>
+          <TouchableOpacity onPress={handleConnectDevice}>
+            <Text style={styles.settingText}>Go</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Divider />
+
+        <View style={styles.settingItem}>
+          <View style={styles.settingInfo}>
             <Ionicons name="share-outline" size={24} color="#6366f1" />
             <Text style={styles.settingText}>Data Sharing</Text>
           </View>
-          <Switch
+          {/* <Switch
             value={dataSharing}
             onValueChange={setDataSharing}
             trackColor={{ false: "#d1d5db", true: "#c7d2fe" }}
             thumbColor={dataSharing ? "#6366f1" : "#f4f3f4"}
-          />
+          /> */}
         </View>
       </View>
 
@@ -129,6 +147,21 @@ const SettingsScreen = () => {
       </TouchableOpacity>
 
       <Text style={styles.versionText}>Version 1.0.0</Text>
+
+      
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <DeviceStatusScreen />
+        <TouchableOpacity
+          style={styles.closeModalButton}
+          onPress={() => setModalVisible(false)}
+        >
+          <Text style={styles.closeModalText}>Close</Text>
+        </TouchableOpacity>
+      </Modal>
     </ScrollView>
   );
 };
@@ -234,6 +267,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#9ca3af',
     marginBottom: 20,
+  },
+  closeModalButton: {
+    backgroundColor: '#6366f1',
+    padding: 10,
+    alignItems: 'center',
+    margin: 20,
+    borderRadius: 5,
+  },
+  closeModalText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 

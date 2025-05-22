@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -8,8 +9,28 @@ import { Ionicons } from '@expo/vector-icons';
 import MainScreen from './screens/MainScreen';
 import ChatScreen from './screens/ChatScreen';
 import SettingsScreen from './screens/SettingsScreen';
+import LogScreen from './screens/LogScreen';
+import PredictedEmotionScreen from './screens/PredictedEmotionScreen';
+import NotificationScreen from './screens/NotificationScreen';
+import DescribeFeelingScreen from './screens/DescribeFeelingScreen';
+import ImpactScreen from './screens/ImpactScreen';
+
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function LogStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Log" component={LogScreen} />
+      <Stack.Screen name="PredictedEmotion" component={PredictedEmotionScreen} />
+      <Stack.Screen name="DescribeFeeling" component={DescribeFeelingScreen} />
+      <Stack.Screen name="Impact" component={ImpactScreen
+        
+      } />
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
   return (
@@ -26,6 +47,10 @@ export default function App() {
                 iconName = focused ? 'chatbubble' : 'chatbubble-outline';
               } else if (route.name === 'Settings') {
                 iconName = focused ? 'settings' : 'settings-outline';
+              } else if (route.name === 'Log') {
+                iconName = focused ? 'add-circle' : 'add-circle-outline';
+              } else if (route.name === 'Notifications') {
+                iconName = focused ? 'notifications' : 'notifications-outline';
               }
 
               return <Ionicons name={iconName as any} size={size} color={color} />;
@@ -38,17 +63,27 @@ export default function App() {
           <Tab.Screen 
             name="Home" 
             component={MainScreen} 
-            options={{ title: 'State of Mind' }}
+            options={{ title: 'Mindly' }}
           />
           <Tab.Screen 
             name="Chat" 
             component={ChatScreen} 
-            options={{ title: 'AI Chat' }}
+            options={{ title: 'Mindly' }}
+          />
+          <Tab.Screen 
+            name="Log" 
+            component={LogStack} 
+            options={{ title: 'Mindly' }} 
+          />
+           <Tab.Screen 
+            name="Notifications" 
+            component={NotificationScreen} 
+            options={{ title: 'Mindly' }} 
           />
           <Tab.Screen 
             name="Settings" 
             component={SettingsScreen} 
-            options={{ title: 'Settings' }}
+            options={{ title: 'Mindly' }}
           />
         </Tab.Navigator>
       </NavigationContainer>
