@@ -17,6 +17,8 @@ import DescribeFeelingScreen from './screens/DescribeFeelingScreen';
 import ImpactScreen from './screens/ImpactScreen';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
+import { KeyboardAvoidingView } from 'react-native';
+import { Platform } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -110,7 +112,9 @@ export default function App() {
   return (
     <AuthProvider>
       <SafeAreaProvider>
-        <AppContent />
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+          <AppContent />
+        </KeyboardAvoidingView>
       </SafeAreaProvider>
     </AuthProvider>
   );

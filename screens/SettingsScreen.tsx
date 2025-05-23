@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Switch, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card, Avatar, Divider } from 'react-native-paper';
-import DeviceStatusScreen from './DeviceStatusScreen';
+import DeviceStatusScreen from './DeviceStatusScreen';      
 import { useAuth } from '../contexts/AuthContext';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const SettingsScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const [dataSharing, setDataSharing] = useState(true);
-
+  const { signOut } = useAuth();
   const handleConnectDevice = () => {
     setModalVisible(true);
   };
@@ -26,7 +27,7 @@ const SettingsScreen = () => {
         },
         { 
           text: "Logout", 
-          onPress: () => console.log("User logged out"),
+          onPress: () => signOut(),
           style: "destructive"
         }
       ]
@@ -34,7 +35,7 @@ const SettingsScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <KeyboardAwareScrollView style={styles.container}>
       <Card style={styles.profileCard}>
         <View style={styles.profileHeader}>
           <Avatar.Image 
@@ -163,7 +164,7 @@ const SettingsScreen = () => {
           <Text style={styles.closeModalText}>Close</Text>
         </TouchableOpacity>
       </Modal>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 

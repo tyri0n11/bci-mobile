@@ -5,6 +5,7 @@ import { Dimensions } from 'react-native';
 import { Card } from '../components/shared/Card';
 import { colors, spacing, typography } from '../theme';
 import { ChartData, Insight, MoodData } from '../types';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -50,7 +51,7 @@ const MainScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <KeyboardAwareScrollView style={styles.container}>
       <Card>
         <Text style={styles.cardTitle}>Current State of Mind</Text>
         <View style={styles.moodIndicator}>
@@ -89,7 +90,7 @@ const MainScreen = () => {
           </View>
         ))}
       </Card>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
