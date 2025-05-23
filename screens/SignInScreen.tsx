@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { FloatingLabelInput } from '../components/shared/FloatingLabelInput';
 import Button from '../components/shared/Button';
 import { colors, spacing, typography } from '../theme';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../supabase';
 
 const SignInScreen = ({ navigation }: any) => {
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [loading, setLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -28,10 +32,43 @@ const SignInScreen = ({ navigation }: any) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (validateForm()) {
-      // TODO: Implement sign in logic
-      console.log('Sign in:', { email, password });
+      setLoading(true);
+      try {
+        const { error } = await signIn(email, password);
+        if (error) {
+          Alert.alert('Error', error.message);
+        }
+      } catch (error: any) {
+        Alert.alert('Error', error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      Alert.alert('Error', 'Please enter your email address');
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'bci-mobile://reset-password',
+      });
+
+      if (error) {
+        Alert.alert('Error', error.message);
+      } else {
+        Alert.alert(
+          'Password Reset',
+          'If an account exists with this email, you will receive a password reset link.'
+        );
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error.message);
     }
   };
 
@@ -54,6 +91,7 @@ const SignInScreen = ({ navigation }: any) => {
             keyboardType="email-address"
             autoCapitalize="none"
             error={errors.email}
+            editable={!loading}
           />
 
           <FloatingLabelInput
@@ -62,9 +100,14 @@ const SignInScreen = ({ navigation }: any) => {
             onChangeText={setPassword}
             secureTextEntry
             error={errors.password}
+            editable={!loading}
           />
 
-          <TouchableOpacity style={styles.forgotPassword}>
+          <TouchableOpacity 
+            style={styles.forgotPassword}
+            onPress={handleForgotPassword}
+            disabled={loading}
+          >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
@@ -72,11 +115,16 @@ const SignInScreen = ({ navigation }: any) => {
             title="Sign In"
             onPress={handleSignIn}
             style={styles.signInButton}
+            loading={loading}
+            disabled={loading}
           />
 
           <View style={styles.signUpContainer}>
             <Text style={styles.signUpText}>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('SignUp')}
+              disabled={loading}
+            >
               <Text style={styles.signUpLink}>Sign Up</Text>
             </TouchableOpacity>
           </View>

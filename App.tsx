@@ -4,7 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { supabase } from './utils/supabaseClient';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { supabase } from './supabase';
 // Screens
 import MainScreen from './screens/MainScreen';
 import ChatScreen from './screens/ChatScreen';
@@ -95,15 +96,22 @@ function MainTabs() {
   );
 }
 
-export default function App() {
-  // TODO: Add authentication state management
-  const isAuthenticated = false;
+function AppContent() {
+  const { session } = useAuth();
 
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        {isAuthenticated ? <MainTabs /> : <AuthStack />}
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <NavigationContainer>
+      {session ? <MainTabs /> : <AuthStack />}
+    </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <SafeAreaProvider>
+        <AppContent />
+      </SafeAreaProvider>
+    </AuthProvider>
   );
 }

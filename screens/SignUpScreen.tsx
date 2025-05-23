@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { FloatingLabelInput } from '../components/shared/FloatingLabelInput';
 import Button from '../components/shared/Button';
 import { colors, spacing, typography } from '../theme';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignUpScreen = ({ navigation }: any) => {
+  const { signUp } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,6 +17,7 @@ const SignUpScreen = ({ navigation }: any) => {
     password?: string;
     confirmPassword?: string;
   }>({});
+  const [loading, setLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors: {
@@ -50,10 +53,30 @@ const SignUpScreen = ({ navigation }: any) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (validateForm()) {
-      // TODO: Implement sign up logic
-      console.log('Sign up:', { name, email, password });
+      setLoading(true);
+      try {
+        const { error } = await signUp(email, password, name);
+        if (error) {
+          Alert.alert('Error', error.message);
+        } else {
+          Alert.alert(
+            'Success',
+            'Please check your email to confirm your account.',
+            [
+              {
+                text: 'OK',
+                onPress: () => navigation.navigate('SignIn'),
+              },
+            ]
+          );
+        }
+      } catch (error: any) {
+        Alert.alert('Error', error.message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -74,6 +97,7 @@ const SignUpScreen = ({ navigation }: any) => {
             value={name}
             onChangeText={setName}
             error={errors.name}
+            editable={!loading}
           />
 
           <FloatingLabelInput
@@ -83,6 +107,7 @@ const SignUpScreen = ({ navigation }: any) => {
             keyboardType="email-address"
             autoCapitalize="none"
             error={errors.email}
+            editable={!loading}
           />
 
           <FloatingLabelInput
@@ -91,6 +116,7 @@ const SignUpScreen = ({ navigation }: any) => {
             onChangeText={setPassword}
             secureTextEntry
             error={errors.password}
+            editable={!loading}
           />
 
           <FloatingLabelInput
@@ -99,17 +125,23 @@ const SignUpScreen = ({ navigation }: any) => {
             onChangeText={setConfirmPassword}
             secureTextEntry
             error={errors.confirmPassword}
+            editable={!loading}
           />
 
           <Button
             title="Sign Up"
             onPress={handleSignUp}
             style={styles.signUpButton}
+            loading={loading}
+            disabled={loading}
           />
 
           <View style={styles.signInContainer}>
             <Text style={styles.signInText}>Already have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('SignIn')}
+              disabled={loading}
+            >
               <Text style={styles.signInLink}>Sign In</Text>
             </TouchableOpacity>
           </View>

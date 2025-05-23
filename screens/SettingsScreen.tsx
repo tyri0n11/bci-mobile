@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Switch, Al
 import { Ionicons } from '@expo/vector-icons';
 import { Card, Avatar, Divider } from 'react-native-paper';
 import DeviceStatusScreen from './DeviceStatusScreen';
+import { useAuth } from '../contexts/AuthContext';
 
 const SettingsScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
