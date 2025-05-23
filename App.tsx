@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-
+import { supabase } from './utils/supabaseClient';
 // Screens
 import MainScreen from './screens/MainScreen';
 import ChatScreen from './screens/ChatScreen';
@@ -18,7 +18,6 @@ import ImpactScreen from './screens/ImpactScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
 function LogStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -63,27 +62,27 @@ export default function App() {
           <Tab.Screen 
             name="Home" 
             component={MainScreen} 
-            options={{ title: 'Mindly' }}
+            options={{ title: 'Home' }}
           />
           <Tab.Screen 
             name="Chat" 
             component={ChatScreen} 
-            options={{ title: 'Mindly' }}
+            options={{ title: 'Direct' }}
           />
           <Tab.Screen 
             name="Log" 
             component={LogStack} 
-            options={{ title: 'Mindly' }} 
+            options={{ title: 'Record' }} 
           />
            <Tab.Screen 
             name="Notifications" 
             component={NotificationScreen} 
-            options={{ title: 'Mindly' }} 
+            options={{ title: 'Notifications' }} 
           />
           <Tab.Screen 
             name="Settings" 
             component={SettingsScreen} 
-            options={{ title: 'Mindly' }}
+            options={{ title: 'Settings' }}
           />
         </Tab.Navigator>
       </NavigationContainer>

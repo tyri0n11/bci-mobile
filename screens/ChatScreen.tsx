@@ -12,29 +12,31 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { colors, spacing, typography } from '../theme';
+import { Message } from '../types';
 
 const ChatScreen = () => {
   const [message, setMessage] = useState('');
-  const [chatHistory, setChatHistory] = useState([
-    { id: '1', text: 'Hello! How are you feeling today?', sender: 'bot' },
+  const [chatHistory, setChatHistory] = useState<Message[]>([
+    { id: '1', text: 'Hello! How are you feeling today?', sender: 'bot', timestamp: new Date() },
   ]);
   
-  const flatListRef = useRef(null);
+  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     if (flatListRef.current) {
-    //   flatListRef.current.scrollToEnd({ animated: true });
+      flatListRef.current.scrollToEnd({ animated: true });
     }
   }, [chatHistory]);
 
   const sendMessage = () => {
     if (message.trim() === '') return;
     
-    // Add user message to chat
-    const userMessage = {
+    const userMessage: Message = {
       id: Date.now().toString(),
       text: message,
       sender: 'user',
+      timestamp: new Date(),
     };
     
     setChatHistory(prevChat => [...prevChat, userMessage]);
@@ -52,24 +54,30 @@ const ChatScreen = () => {
       
       const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
       
-      const botMessage = {
+      const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: randomResponse,
         sender: 'bot',
+        timestamp: new Date(),
       };
       
       setChatHistory(prevChat => [...prevChat, botMessage]);
     }, 1000);
   };
 
-  const renderChatItem = ({ item }: { item: { id: string, text: string, sender: string } }) => (
+  const renderChatItem = ({ item }: { item: Message }) => (
     <View 
       style={[
         styles.messageBubble, 
         item.sender === 'user' ? styles.userBubble : styles.botBubble
       ]}
     >
-      <Text style={styles.messageText}>{item.text}</Text>
+      <Text style={[
+        styles.messageText,
+        item.sender === 'user' ? styles.userMessageText : styles.botMessageText
+      ]}>
+        {item.text}
+      </Text>
     </View>
   );
 
@@ -96,7 +104,7 @@ const ChatScreen = () => {
             value={message}
             onChangeText={setMessage}
             placeholder="Type your message..."
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.text.light}
             multiline
           />
           <TouchableOpacity 
@@ -107,7 +115,7 @@ const ChatScreen = () => {
             <Ionicons 
               name="send" 
               size={24} 
-              color={message.trim() === '' ? '#ccc' : '#6366f1'} 
+              color={message.trim() === '' ? colors.text.light : colors.primary} 
             />
           </TouchableOpacity>
         </View>
@@ -119,56 +127,61 @@ const ChatScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   chatContainer: {
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: spacing.md,
   },
   chatContent: {
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.sm,
   },
   messageBubble: {
     maxWidth: '80%',
-    padding: 12,
+    padding: spacing.md,
     borderRadius: 20,
-    marginVertical: 5,
+    marginVertical: spacing.xs,
   },
   userBubble: {
-    backgroundColor: '#6366f1',
+    backgroundColor: colors.primary,
     alignSelf: 'flex-end',
     borderBottomRightRadius: 5,
   },
   botBubble: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: colors.secondary,
     alignSelf: 'flex-start',
     borderBottomLeftRadius: 5,
   },
   messageText: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: typography.sizes.medium,
+  },
+  userMessageText: {
+    color: colors.white,
+  },
+  botMessageText: {
+    color: colors.text.primary,
   },
   inputContainer: {
     flexDirection: 'row',
-    padding: 10,
-    backgroundColor: '#fff',
+    padding: spacing.md,
+    backgroundColor: colors.white,
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
+    borderTopColor: colors.border,
   },
   input: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
     borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
     maxHeight: 100,
-    fontSize: 16,
+    fontSize: typography.sizes.medium,
   },
   sendButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 10,
+    marginLeft: spacing.sm,
     height: 50,
     width: 50,
     borderRadius: 25,

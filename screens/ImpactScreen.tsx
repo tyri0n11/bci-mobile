@@ -77,7 +77,7 @@ export default function DescribeImpactScreen({ navigation }: any) {
       </TouchableOpacity>
 
       {/* Next Button */}
-      <TouchableOpacity style={styles.button} >
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
         <Text style={styles.buttonText}>Done</Text>
       </TouchableOpacity>
     </View>
