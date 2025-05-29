@@ -19,6 +19,20 @@ type Emotion = {
 
 const emotions: Emotion[] = [
   {
+    name: 'Very Unpleasant',
+    image: require('../assets/very_unpleasant_mindly.png'),
+    backgroundColor: '#4a148c', // dark purple
+    textColor: '#fff',
+    buttonColor: '#7c43bd',
+  },
+  {
+    name: 'Slightly Unpleasant',
+    image: require('../assets/slightly_unpleasant_mindly.png'),
+    backgroundColor: '#3949ab',
+    textColor: '#fff',
+    buttonColor: '#1e88e5',
+  },
+  {
     name: 'Neutral',
     image: require('../assets/neutral_mindly.png'),
     backgroundColor: colors.background,
@@ -26,18 +40,18 @@ const emotions: Emotion[] = [
     buttonColor: colors.primary,
   },
   {
-    name: 'Grateful',
-    image: require('../assets/grateful_mindly.png'),
-    backgroundColor: '#E8F5E9',
-    textColor: '#2E7D32',
-    buttonColor: '#4CAF50',
+    name: 'Slightly Pleasant',
+    image: require('../assets/slightly_pleasant_mindly.png'),
+    backgroundColor: '#ffeb3b',
+    textColor: '#333',
+    buttonColor: '#fbc02d',
   },
   {
-    name: 'Unpleasant',
-    image: require('../assets/unpleasant_mindly.png'),
-    backgroundColor: '#FFEBEE',
-    textColor: '#C62828',
-    buttonColor: '#EF5350',
+    name: 'Very Pleasant',
+    image: require('../assets/very_pleasant_mindly.png'),
+    backgroundColor: '#fff176',
+    textColor: '#333',
+    buttonColor: '#ffca28',
   },
 ];
 

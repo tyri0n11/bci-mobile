@@ -41,7 +41,7 @@ const SettingsScreen = () => {
         <View style={styles.profileHeader}>
           <Avatar.Image 
             size={80} 
-            source={require('../assets/grateful_mindly.png')} 
+            source={require('../assets/very_pleasant_mindly.png')} 
           />
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>{user?.user_metadata.name || 'Mindly'}</Text>

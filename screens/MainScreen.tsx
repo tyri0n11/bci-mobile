@@ -6,6 +6,8 @@ import { colors, spacing, typography } from '../theme';
 import { ChartData, Insight, MoodData } from '../types';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useMood } from '../contexts/MoodContext';
+import EEGChart from '../components/shared/EEGChart';
+import { useBluetooth } from '../contexts/BluetoothContext';
 
 const screenWidth = Dimensions.get('window').width;
 const CARD_HORIZONTAL_PADDING = spacing.md * 2; // Card has padding on both sides
@@ -72,7 +74,27 @@ function isDarkColor(hex: string) {
   if (brightness > 100) return false; // rất sáng, luôn dùng chữ đen
   return brightness < 210;
 }
-
+function getMood(score: number) {
+  if (score < 10) {
+    return "Very Unpleasant";
+  } else if (score < 20) {
+    return "Moderately Unpleasant";
+  } else if (score < 30) {
+    return "Slightly Unpleasant";
+  } else if (score < 40) {
+    return "Slightly Unpleasant";
+  } else if (score < 50) {
+    return "Neutral";
+  } else if (score < 60) {
+    return "Slightly Pleasant";
+  } else if (score < 70) {
+    return "Slightly Pleasant";
+  } else if (score < 80) {
+    return "Moderately Pleasant";
+  } else {
+    return "Very Pleasant";
+  }
+}
 function getMoodSuggestion(score: number) {
   if (score < 30) {
     return "Try some light exercise, chat with Mindly AI, or meditate to improve your mood!";
@@ -83,33 +105,41 @@ function getMoodSuggestion(score: number) {
   }
 }
 
+// Thêm dữ liệu mẫu EEG (8 kênh, 100 điểm)
+const eegData = Array.from({ length: 8 }, (_, ch) =>
+  Array.from({ length: 100 }, (_, i) =>
+    4 + 2 * Math.sin(i / 8 + ch) + Math.random() * 0.5 * (Math.random() > 0.5 ? 1 : -1)
+  )
+);
+
 const MainScreen = () => {
   const { moodScore, setMoodScore } = useMood();
   const [currentMood, setCurrentMood] = useState<MoodData>({
-    mood: 'Calm',
+    mood: 'Neutral',
     score: moodScore,
     timestamp: new Date(),
   });
   const [isDemo, setIsDemo] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const demoScoreRef = useRef(moodScore);
+  const { connectionStatus } = useBluetooth();
 
   useEffect(() => {
-    setCurrentMood((m) => ({ ...m, score: moodScore }));
+    setCurrentMood((m) => ({ ...m, score: moodScore, mood: getMood(moodScore) }));
   }, [moodScore]);
 
   useEffect(() => {
     if (isDemo) {
       setCurrentMood((m) => ({ ...m, score: 0 }));
       setMoodScore(0);
+      demoScoreRef.current = 0;
       intervalRef.current && clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => {
-        setCurrentMood((prev) => {
-          let next = prev.score + 1;
-          if (next > 100) next = 0;
-          setMoodScore(next);
-          return { ...prev, score: next };
-        });
-      }, 40);
+        let next = demoScoreRef.current + 1;
+        if (next > 100) next = 0;
+        demoScoreRef.current = next;
+        setMoodScore(next);
+      }, 100);
     } else {
       intervalRef.current && clearInterval(intervalRef.current);
     }
@@ -191,7 +221,10 @@ const MainScreen = () => {
           </Text>
         </TouchableOpacity>
       </Card>
-
+      <Card>
+        <Text style={styles.cardTitle}>EEG Signal</Text>
+        <EEGChart width={350} height={180} isConnected={connectionStatus === 'connected'} />
+      </Card>
       <Card>
         <Text style={styles.cardTitle}>Mood History</Text>
         <View style={styles.chartContainer}>

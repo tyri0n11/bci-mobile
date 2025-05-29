@@ -39,15 +39,15 @@ export const colors = {
     superb: '#ffb300',    // Yellow (55)
     
     // High scores (60-100)
-    amazing: '#fb8c00',   // Orange-yellow (60)
-    outstanding: '#f57c00', // Orange (65)
-    exceptional: '#ef6c00', // Deep orange (70)
-    incredible: '#e65100', // Red-orange (75)
-    perfect: '#d32f2f',   // Red (80)
-    master: '#b71c1c',    // Deep red (85)
-    legendary: '#880e4f', // Burgundy (90)
-    godlike: '#4a148c',   // Dark red (95)
-    ultimate: '#311b92',  // Deep purple-red (100)
+    amazing: '#ffca28',   // Bright orange-yellow (60)
+    outstanding: '#ffc107', // Bright orange-yellow (65)
+    exceptional: '#ffb300', // Bright orange-yellow (70)
+    incredible: '#ffa000', // Orange-yellow (75)
+    perfect: '#ff9800',   // Orange (80)
+    master: '#ffb300',    // Bright orange-yellow (85)
+    legendary: '#ffc107', // Bright orange-yellow (90)
+    godlike: '#ffd54f',   // Bright orange-yellow (95)
+    ultimate: '#fff176',  // Brightest yellow (100)
   },
 };
 

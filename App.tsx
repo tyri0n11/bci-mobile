@@ -9,6 +9,7 @@ import { BluetoothProvider } from './contexts/BluetoothContext';
 import { EmotionProvider } from './contexts/EmotionContext';
 import Header from './components/shared/Header';
 import { KeyboardAvoidingView, Platform } from 'react-native';
+import CustomTabBar from './components/shared/CustomTabBar';
 
 // Screens
 import MainScreen from './screens/MainScreen';
@@ -61,26 +62,8 @@ function MainTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Home"
+      tabBar={props => <CustomTabBar {...props} />}
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Chat') {
-            iconName = focused ? 'chatbubble' : 'chatbubble-outline';
-          } else if (route.name === 'Settings') {
-            iconName = focused ? 'settings' : 'settings-outline';
-          } else if (route.name === 'Log') {
-            iconName = focused ? 'add-circle' : 'add-circle-outline';
-          } else if (route.name === 'Notifications') {
-            iconName = focused ? 'notifications' : 'notifications-outline';
-          }
-
-          return <Ionicons name={iconName as any} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: '#6366f1',
-        tabBarInactiveTintColor: 'gray',
         headerShown: true,
         header: () => <Header />
       })}

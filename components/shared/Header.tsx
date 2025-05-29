@@ -8,9 +8,10 @@ import { useMood } from '../../contexts/MoodContext';
 
 // Dummy devices for demonstration
 const dummyDevices = [
-  { id: '1', name: 'Mindly Device 1' },
-  { id: '2', name: 'Mindly Device 2' },
-  { id: '3', name: 'Mindly Device 3' },
+  { id: '1', name: 'Mindly Pro' },
+  { id: '2', name: 'Mindly Promax' },
+  { id: '3', name: 'Mindly +' },
+  { id: '4', name: 'Mindly' },
 ];
 
 const getMoodColor = (score: number): string => {
@@ -82,14 +83,14 @@ export default function Header() {
         );
       case 'scanning':
         return (
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { justifyContent: 'center', alignItems: 'center', width: '100%' }]}> 
             <ActivityIndicator size="large" color={colors.primary} />
             <Text style={styles.modalSubtitle}>Scanning for devices...</Text>
           </View>
         );
       case 'selecting':
         return (
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { justifyContent: 'center', alignItems: 'center', width: '100%' }]}> 
             <Text style={styles.modalTitle}>Select Device</Text>
             {dummyDevices.map((device) => (
               <TouchableOpacity
