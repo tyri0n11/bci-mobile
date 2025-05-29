@@ -56,7 +56,7 @@ export default function Header() {
   const getStatusColor = () => {
     switch (connectionStatus) {
       case 'connected':
-        return colors.primary;
+        return getMoodColor(moodScore) || colors.primary;
       case 'scanning':
       case 'connecting':
         return colors.text.secondary;
@@ -97,7 +97,7 @@ export default function Header() {
                 style={styles.deviceItem}
                 onPress={() => selectDevice(device)}
               >
-                <Ionicons name="bluetooth" size={24} color={colors.primary} />
+                <Ionicons name="bluetooth" size={28} color={colors.primary} />
                 <Text style={styles.deviceName}>{device.name}</Text>
               </TouchableOpacity>
             ))}

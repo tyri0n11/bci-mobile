@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions, Platform, TouchableOpacity } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { Card } from '../components/shared/Card';
 import { colors, spacing, typography } from '../theme';
@@ -71,6 +71,16 @@ function isDarkColor(hex: string) {
   const brightness = (r*0.299 + g*0.587 + b*0.114);
   if (brightness > 100) return false; // rất sáng, luôn dùng chữ đen
   return brightness < 210;
+}
+
+function getMoodSuggestion(score: number) {
+  if (score < 30) {
+    return "Try some light exercise, chat with Mindly AI, or meditate to improve your mood!";
+  } else if (score < 70) {
+    return "Your mood is stable. Keep up your good habits and try adding more positive activities!";
+  } else {
+    return "Awesome! Keep maintaining this positive energy and spread it to those around you!";
+  }
 }
 
 const MainScreen = () => {
@@ -169,22 +179,24 @@ const MainScreen = () => {
           </View>
         </View>
         <Text style={[styles.moodDescription, { color: moodTextColor, opacity: 0.85 }] }>
-          Your mood has been consistently positive over the past week. Keep up the good work!
+          {getMoodSuggestion(moodScore)}
         </Text>
-        <View style={{ alignItems: 'center', marginTop: 12 }}>
+        <TouchableOpacity style={{ alignItems: 'center', padding: 10 }}
+        onPress={() => setIsDemo((d) => !d)}
+        >
           <Text
-            style={{ color: isDemo ? colors.success : colors.primary, fontWeight: 'bold', marginBottom: 4 }}
-            onPress={() => setIsDemo((d) => !d)}
+            style={{ color: isDemo ? colors.success : colors.primary, fontSize: 1,  fontWeight: '400'}}
           >
             {isDemo ? 'Turn off Demo' : 'Turn on Demo'}
           </Text>
-        </View>
+        </TouchableOpacity>
       </Card>
 
       <Card>
         <Text style={styles.cardTitle}>Mood History</Text>
         <View style={styles.chartContainer}>
           <LineChart
+            key={moodScore}
             data={chartData}
             width={CHART_WIDTH}
             height={220}
@@ -283,7 +295,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   moodCard: {
-    padding: spacing.lg,
+    padding: spacing.sm,
     marginBottom: spacing.md,
     borderWidth: 0,
   },
