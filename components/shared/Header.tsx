@@ -1,42 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '../../theme';
+import { useBluetooth } from '../../contexts/BluetoothContext';
 
-type ConnectionStatus = 'disconnected' | 'scanning' | 'selecting' | 'connecting' | 'connected';
+// Dummy devices for demonstration
+const dummyDevices = [
+  { id: '1', name: 'Mindly Device 1' },
+  { id: '2', name: 'Mindly Device 2' },
+  { id: '3', name: 'Mindly Device 3' },
+];
 
 export default function Header() {
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('disconnected');
-  const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
-
-  // Dummy devices for demonstration
-  const dummyDevices = [
-    { id: '1', name: 'Mindly Device 1' },
-    { id: '2', name: 'Mindly Device 2' },
-    { id: '3', name: 'Mindly Device 3' },
-  ];
-
-  const handleStartScan = () => {
-    setConnectionStatus('scanning');
-    // Simulate scanning delay
-    setTimeout(() => {
-      setConnectionStatus('selecting');
-    }, 2000);
-  };
-
-  const handleSelectDevice = (deviceId: string) => {
-    setSelectedDevice(deviceId);
-    setConnectionStatus('connecting');
-    // Simulate connection delay
-    setTimeout(() => {
-      setConnectionStatus('connected');
-      setTimeout(() => {
-        setModalVisible(false);
-      }, 1000);
-    }, 2000);
-  };
+  const {
+    connectionStatus,
+    isModalVisible,
+    setModalVisible,
+    startScan,
+    selectDevice,
+  } = useBluetooth();
 
   const getStatusColor = () => {
     switch (connectionStatus) {
@@ -59,7 +42,7 @@ export default function Header() {
             <Text style={styles.modalSubtitle}>Start scanning for nearby devices</Text>
             <TouchableOpacity 
               style={styles.scanButton}
-              onPress={handleStartScan}
+              onPress={startScan}
             >
               <Text style={styles.scanButtonText}>Start Scan</Text>
             </TouchableOpacity>
@@ -80,7 +63,7 @@ export default function Header() {
               <TouchableOpacity
                 key={device.id}
                 style={styles.deviceItem}
-                onPress={() => handleSelectDevice(device.id)}
+                onPress={() => selectDevice(device)}
               >
                 <Ionicons name="bluetooth" size={24} color={colors.primary} />
                 <Text style={styles.deviceName}>{device.name}</Text>
@@ -114,7 +97,7 @@ export default function Header() {
           onPress={() => {
             setModalVisible(true);
             if (connectionStatus === 'disconnected') {
-              handleStartScan();
+              startScan();
             }
           }}
         >

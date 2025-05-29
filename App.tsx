@@ -5,34 +5,41 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { BluetoothProvider } from './contexts/BluetoothContext';
+import { EmotionProvider } from './contexts/EmotionContext';
 import Header from './components/shared/Header';
+import { KeyboardAvoidingView, Platform } from 'react-native';
+
 // Screens
 import MainScreen from './screens/MainScreen';
 import ChatScreen from './screens/ChatScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import LogScreen from './screens/LogScreen';
-import PredictedEmotionScreen from './screens/PredictedEmotionScreen';
+import EmotionLogScreen from './screens/EmotionLogScreen';
 import NotificationScreen from './screens/NotificationScreen';
-import DescribeFeelingScreen from './screens/DescribeFeelingScreen';
-import ImpactScreen from './screens/ImpactScreen';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
-import { KeyboardAvoidingView } from 'react-native';
-import { Platform } from 'react-native';
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function LogStack() {
   return (
-    <Stack.Navigator 
-      screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
-    >
-      <Stack.Screen name="LogEmotion" component={LogScreen} />
-      <Stack.Screen name="PredictedEmotion" component={PredictedEmotionScreen} />
-      <Stack.Screen name="DescribeFeeling" component={DescribeFeelingScreen} />
-      <Stack.Screen name="Impact" component={ImpactScreen} />
-    </Stack.Navigator>
+    <EmotionProvider>
+      <Stack.Navigator 
+        screenOptions={{ 
+          headerShown: false, 
+          animation: 'slide_from_right',
+          gestureEnabled: false // Disable swipe back gesture
+        }}
+      >
+        <Stack.Screen 
+          name="LogEmotion" 
+          component={EmotionLogScreen}
+          options={{
+            animation: 'none' // Disable animation for LogScreen
+          }}
+        />
+      </Stack.Navigator>
+    </EmotionProvider>
   );
 }
 
@@ -40,8 +47,7 @@ function AuthStack() {
   return (
     <Stack.Navigator 
       screenOptions={{ 
-        headerShown: true,
-        header: () => <Header />
+        headerShown: false,
       }}
     >
       <Stack.Screen name="SignIn" component={SignInScreen} />
@@ -53,6 +59,7 @@ function AuthStack() {
 function MainTabs() {
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -90,7 +97,10 @@ function MainTabs() {
       <Tab.Screen 
         name="Log" 
         component={LogStack} 
-        options={{ title: '' }} 
+        options={{ 
+          title: '',
+          lazy: false // This ensures LogStack is always mounted
+        }} 
       />
       <Tab.Screen 
         name="Notifications" 
@@ -118,12 +128,17 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <SafeAreaProvider>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-          <AppContent />
-        </KeyboardAvoidingView>
-      </SafeAreaProvider>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <BluetoothProvider>
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
+            style={{ flex: 1 }}
+          >
+            <AppContent />
+          </KeyboardAvoidingView>
+        </BluetoothProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

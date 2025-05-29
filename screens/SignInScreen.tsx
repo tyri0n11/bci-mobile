@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, TextInput } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, TextInput, Animated, Easing } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Button from '../components/shared/Button';
@@ -22,6 +22,49 @@ const SignInScreen = ({ navigation }: any) => {
   const { signIn } = useAuth();
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Animation values
+  const formSlide = useRef(new Animated.Value(50)).current;
+  const formOpacity = useRef(new Animated.Value(0)).current;
+  const emailInputScale = useRef(new Animated.Value(1)).current;
+  const passwordInputScale = useRef(new Animated.Value(1)).current;
+  const buttonScale = useRef(new Animated.Value(1)).current;
+  const socialButtonsSlide = useRef(new Animated.Value(50)).current;
+  const socialButtonsOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Initial animations
+    Animated.parallel([
+      Animated.timing(formSlide, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.cubic),
+      }),
+      Animated.timing(formOpacity, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    // Delayed social buttons animation
+    setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(socialButtonsSlide, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.cubic),
+        }),
+        Animated.timing(socialButtonsOpacity, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }, 400);
+  }, []);
 
   const handleSignIn = async (values: { email: string; password: string }) => {
     setLoading(true);
@@ -59,6 +102,36 @@ const SignInScreen = ({ navigation }: any) => {
     }
   };
 
+  const animateInput = (inputScale: Animated.Value) => {
+    Animated.sequence([
+      Animated.timing(inputScale, {
+        toValue: 1.02,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(inputScale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const animateButton = () => {
+    Animated.sequence([
+      Animated.timing(buttonScale, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(buttonScale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollContent}
@@ -67,59 +140,81 @@ const SignInScreen = ({ navigation }: any) => {
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.centerContent}>
-        <View style={styles.header}>
-          <Text style={styles.signInTitle}>Sign in</Text>
-        </View>
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={validationSchema}
           onSubmit={handleSignIn}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldTouched }) => (
-            <View style={styles.form}>
+            <Animated.View 
+              style={[
+                styles.form,
+                {
+                  transform: [{ translateY: formSlide }],
+                  opacity: formOpacity,
+                }
+              ]}
+            >
+              <View style={styles.formHeader}>
+                <Text style={styles.formHeaderText}>Sign in</Text>
+              </View>
               <Text style={styles.inputLabel}>Email</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  touched.email && errors.email && styles.inputError,
-                  touched.email && !errors.email && styles.inputFocused,
-                ]}
-                placeholder="your@email.com"
-                placeholderTextColor={colors.text.secondary}
-                value={values.email}
-                onChangeText={handleChange('email')}
-                onBlur={() => {
-                  handleBlur('email');
-                  setFieldTouched('email', true);
-                }}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                editable={!loading}
-              />
+              <Animated.View style={{ transform: [{ scale: emailInputScale }] }}>
+                <TextInput
+                  style={[
+                    styles.input,
+                    touched.email && errors.email && styles.inputError,
+                    touched.email && !errors.email && styles.inputFocused,
+                  ]}
+                  placeholder="your@email.com"
+                  placeholderTextColor={colors.text.secondary}
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  onFocus={() => {
+                    animateInput(emailInputScale);
+                    setFieldTouched('email', true);
+                  }}
+                  onBlur={() => handleBlur('email')}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  editable={!loading}
+                />
+              </Animated.View>
               {touched.email && errors.email && (
-                <Text style={styles.errorText}>{errors.email}</Text>
+                <Animated.Text 
+                  style={[styles.errorText, { opacity: formOpacity }]}
+                >
+                  {errors.email}
+                </Animated.Text>
               )}
 
               <Text style={styles.inputLabel}>Password</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  touched.password && errors.password && styles.inputError,
-                  touched.password && !errors.password && styles.inputFocused,
-                ]}
-                placeholder="Password"
-                placeholderTextColor={colors.text.secondary}
-                value={values.password}
-                onChangeText={handleChange('password')}
-                onBlur={() => {
-                  handleBlur('password');
-                  setFieldTouched('password', true);
-                }}
-                secureTextEntry
-                editable={!loading}
-              />
+              <Animated.View style={{ transform: [{ scale: passwordInputScale }] }}>
+                <TextInput
+                  style={[
+                    styles.input,
+                    touched.password && errors.password && styles.inputError,
+                    touched.password && !errors.password && styles.inputFocused,
+                  ]}
+                  placeholder="Password"
+                  placeholderTextColor={colors.text.secondary}
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  onFocus={() => {
+                    animateInput(passwordInputScale);
+                    setFieldTouched('password', true);
+                  }}
+                  onBlur={() => handleBlur('password')}
+                  secureTextEntry
+                  editable={!loading}
+                />
+              </Animated.View>
               {touched.password && errors.password && (
-                <Text style={styles.errorText}>{errors.password}</Text>
+                <Animated.Text 
+                  style={[styles.errorText, { opacity: formOpacity }]}
+                >
+                  {errors.password}
+                </Animated.Text>
               )}
 
               <View style={styles.rememberRow}>
@@ -127,18 +222,22 @@ const SignInScreen = ({ navigation }: any) => {
                   checked={rememberMe}
                   onPress={() => setRememberMe(!rememberMe)}
                   label="Remember me"
-                  disabled={loading}
                 />
               </View>
 
-              <Button
-                title="Sign in"
-                onPress={() => handleSubmit()}
-                style={styles.signInButton}
-                textStyle={styles.signInButtonText}
-                loading={loading}
-                disabled={loading}
-              />
+              <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+                <Button
+                  title="Sign in"
+                  onPress={() => {
+                    animateButton();
+                    handleSubmit();
+                  }}
+                  style={styles.signInButton}
+                  textStyle={styles.signInButtonText}
+                  loading={loading}
+                  disabled={loading}
+                />
+              </Animated.View>
 
               <TouchableOpacity
                 style={styles.forgotPassword}
@@ -154,20 +253,30 @@ const SignInScreen = ({ navigation }: any) => {
                 <View style={styles.divider} />
               </View>
 
-              <Button
-                title="Sign in with Google"
-                onPress={() => { }}
-                style={styles.socialButton}
-                textStyle={styles.socialButtonText}
-                disabled={loading}
-              />
-              <Button
-                title="Sign in with Facebook"
-                onPress={() => { }}
-                style={styles.socialButton}
-                textStyle={styles.socialButtonText}
-                disabled={loading}
-              />
+              <Animated.View 
+                style={[
+                  styles.socialButtonsContainer,
+                  {
+                    transform: [{ translateY: socialButtonsSlide }],
+                    opacity: socialButtonsOpacity,
+                  }
+                ]}
+              >
+                <Button
+                  title="Sign in with Google"
+                  onPress={() => { }}
+                  style={styles.socialButton}
+                  textStyle={styles.socialButtonText}
+                  disabled={loading}
+                />
+                <Button
+                  title="Sign in with Facebook"
+                  onPress={() => { }}
+                  style={styles.socialButton}
+                  textStyle={styles.socialButtonText}
+                  disabled={loading}
+                />
+              </Animated.View>
 
               <View style={styles.signUpContainer}>
                 <Text style={styles.signUpText}>Don't have an account? </Text>
@@ -178,7 +287,7 @@ const SignInScreen = ({ navigation }: any) => {
                   <Text style={styles.signUpLink}>Sign up</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </Animated.View>
           )}
         </Formik>
       </View>
@@ -194,6 +303,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: spacing.lg,
+    paddingTop: 0,
   },
   centerContent: {
     flex: 1,
@@ -210,10 +320,18 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   signInTitle: {
-    fontSize: typography.sizes.large,
+    fontSize: typography.sizes.xxlarge,
     fontWeight: typography.weights.bold,
-    color: colors.text.primary,
+    color: colors.primary,
     marginBottom: spacing.xl,
+  },
+  formHeader: {
+    marginBottom: spacing.lg,
+  },
+  formHeaderText: {
+    fontSize: typography.sizes.xxlarge,
+    color: colors.primary,
+    fontWeight: typography.weights.bold,
   },
   form: {
     backgroundColor: colors.white,
@@ -234,9 +352,16 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
     backgroundColor: colors.background,
     marginBottom: spacing.md,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   inputError: {
     borderColor: '#ef4444',
+    shadowColor: '#ef4444',
+    shadowOpacity: 0.2,
   },
   errorText: {
     color: '#ef4444',
@@ -250,10 +375,15 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   signInButton: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.secondary,
     borderRadius: 8,
     marginBottom: spacing.md,
     height: 48,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   signInButtonText: {
     color: colors.text.primary,
@@ -321,9 +451,12 @@ const styles = StyleSheet.create({
   inputFocused: {
     borderColor: colors.primary,
     shadowColor: colors.primary,
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  socialButtonsContainer: {
+    width: '100%',
   },
 });
 

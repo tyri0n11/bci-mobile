@@ -82,11 +82,10 @@ const SignUpScreen = ({ navigation }: any) => {
   return (
       <ScrollView style={styles.scrollContent} >
         <View style={styles.centerContent}>
+          <View style={styles.form}>
           <View style={styles.header}>
-            <Text style={styles.sitemark}>Mindly</Text>
             <Text style={styles.signUpTitle}>Sign up</Text>
           </View>
-          <View style={styles.form}>
             <Text style={styles.inputLabel}>Full Name</Text>
             <TextInput
               style={[
@@ -186,6 +185,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: spacing.lg,
+    paddingTop: 0,
   },
   centerContent: {
     flex: 1,
@@ -193,8 +193,8 @@ const styles = StyleSheet.create({
     minHeight: '100%',
   },
   header: {
-    alignItems: 'center',
-    marginBottom: spacing.xl,
+    alignItems: 'flex-start',
+    marginBottom: spacing.lg,
   },
   sitemark: {
     fontSize: typography.sizes.xxlarge,
@@ -203,9 +203,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   signUpTitle: {
-    fontSize: typography.sizes.large,
+    fontSize: typography.sizes.xxlarge,
     fontWeight: typography.weights.bold,
-    color: colors.text.primary,
+    color: colors.primary,
     marginBottom: spacing.xl,
   },
   form: {
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   signUpButton: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.secondary,
     borderRadius: 8,
     marginBottom: spacing.md,
     height: 48,
