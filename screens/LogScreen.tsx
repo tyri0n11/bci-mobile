@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import { colors, spacing, typography, commonStyles } from '../theme';
 
 
 
@@ -37,46 +38,47 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: typography.sizes.xlarge,
+    fontWeight: typography.weights.bold,
+    marginBottom: spacing.sm,
+    color: colors.text.primary,
   },
   subtitle: {
-    fontSize: 16,
-    color: 'gray',
-    marginBottom: 20,
+    fontSize: typography.sizes.medium,
+    color: colors.text.secondary,
+    marginBottom: spacing.md,
   },
   image: {
     width: 100,
     height: 100,
-    marginBottom: 20,
+    marginBottom: spacing.md,
   },
   date: {
-    fontSize: 16,
-    color: 'gray',
-    marginBottom: 5,
+    fontSize: typography.sizes.medium,
+    color: colors.text.secondary,
+    marginBottom: spacing.xs,
   },
   time: {
-    fontSize: 16,
-    color: 'gray',
-    marginBottom: 20,
+    fontSize: typography.sizes.medium,
+    color: colors.text.secondary,
+    marginBottom: spacing.md,
   },
   button: {
     position: 'absolute',
-    bottom: 30,
-    left: 20,
-    right: 20,
-    backgroundColor: '#6366f1',
-    paddingVertical: 14,
+    bottom: spacing.xl,
+    left: spacing.md,
+    right: spacing.md,
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.md,
     borderRadius: 5,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: colors.white,
+    fontSize: typography.sizes.medium,
+    fontWeight: typography.weights.bold,
   },
 });

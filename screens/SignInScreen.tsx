@@ -68,7 +68,6 @@ const SignInScreen = ({ navigation }: any) => {
     >
       <View style={styles.centerContent}>
         <View style={styles.header}>
-          <Text style={styles.sitemark}>Mindly</Text>
           <Text style={styles.signInTitle}>Sign in</Text>
         </View>
         <Formik
@@ -203,7 +202,6 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: spacing.xl,
   },
   sitemark: {
     fontSize: typography.sizes.xxlarge,

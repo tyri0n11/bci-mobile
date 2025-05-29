@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { colors, spacing, typography, commonStyles } from '../theme';
 
 export default function NotificationScreen() {
   return (
@@ -15,15 +16,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: typography.sizes.xlarge,
+    fontWeight: typography.weights.bold,
+    marginBottom: spacing.sm,
+    color: colors.text.primary,
   },
   message: {
-    fontSize: 16,
-    color: 'gray',
+    fontSize: typography.sizes.medium,
+    color: colors.text.secondary,
   },
 });

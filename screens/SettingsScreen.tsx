@@ -5,6 +5,7 @@ import { Card, Avatar, Divider } from 'react-native-paper';
 import DeviceStatusScreen from './DeviceStatusScreen';      
 import { useAuth } from '../contexts/AuthContext';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { colors, spacing, typography, commonStyles } from '../theme';
 
 const SettingsScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -40,7 +41,7 @@ const SettingsScreen = () => {
         <View style={styles.profileHeader}>
           <Avatar.Image 
             size={80} 
-            source={{ uri: 'https://randomuser.me/api/portraits/women/17.jpg' }} 
+            source={require('../assets/grateful_mindly.png')} 
           />
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>Hello Thuan</Text>
@@ -171,12 +172,12 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 15,
+    backgroundColor: colors.background,
+    padding: spacing.md,
   },
   profileCard: {
-    padding: 15,
-    marginBottom: 20,
+    padding: spacing.md,
+    marginBottom: spacing.md,
     borderRadius: 10,
   },
   profileHeader: {
@@ -184,103 +185,107 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileInfo: {
-    marginLeft: 15,
+    marginLeft: spacing.md,
   },
   profileName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: typography.sizes.large,
+    fontWeight: typography.weights.bold,
+    color: colors.text.primary,
   },
   profileEmail: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 2,
+    fontSize: typography.sizes.small,
+    color: colors.text.secondary,
+    marginTop: spacing.xs,
   },
   editProfileButton: {
-    backgroundColor: '#f3f4f6',
-    padding: 10,
+    backgroundColor: colors.secondary,
+    padding: spacing.sm,
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: spacing.md,
   },
   editProfileText: {
-    color: '#6366f1',
-    fontWeight: 'bold',
+    color: colors.primary,
+    fontWeight: typography.weights.bold,
   },
   settingsSection: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: spacing.md,
     overflow: 'hidden',
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    padding: 15,
-    backgroundColor: '#f9fafb',
+    fontSize: typography.sizes.medium,
+    fontWeight: typography.weights.bold,
+    color: colors.text.primary,
+    padding: spacing.md,
+    backgroundColor: colors.secondary,
   },
   settingItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    padding: spacing.md,
   },
   settingInfo: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   settingText: {
-    fontSize: 16,
-    marginLeft: 15,
-    color: '#333',
+    fontSize: typography.sizes.medium,
+    marginLeft: spacing.md,
+    color: colors.text.primary,
   },
   menuItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    padding: spacing.md,
   },
   menuInfo: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   menuText: {
-    fontSize: 16,
-    marginLeft: 15,
-    color: '#333',
+    fontSize: typography.sizes.medium,
+    marginLeft: spacing.md,
+    color: colors.text.primary,
   },
   logoutButton: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fee2e2',
-    padding: 15,
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+    padding: spacing.md,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: spacing.md,
   },
   logoutText: {
     color: '#ef4444',
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: typography.sizes.medium,
+    fontWeight: typography.weights.bold,
+    marginLeft: spacing.sm,
   },
   versionText: {
     textAlign: 'center',
-    color: '#9ca3af',
-    marginBottom: 20,
+    color: colors.text.secondary,
+    fontSize: typography.sizes.small,
+    marginBottom: spacing.md,
   },
   closeModalButton: {
-    backgroundColor: '#6366f1',
-    padding: 10,
-    alignItems: 'center',
-    margin: 20,
+    position: 'absolute',
+    bottom: spacing.xl,
+    left: spacing.md,
+    right: spacing.md,
+    backgroundColor: colors.primary,
+    padding: spacing.md,
     borderRadius: 5,
+    alignItems: 'center',
   },
   closeModalText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
+    color: colors.white,
+    fontSize: typography.sizes.medium,
+    fontWeight: typography.weights.bold,
   },
 });
 

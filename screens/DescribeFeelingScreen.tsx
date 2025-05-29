@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { colors, spacing, typography, commonStyles } from '../theme';
 
 const feelingsList = [
   'Angry', 'Anxious', 'Scared',
@@ -29,14 +30,6 @@ export default function DescribeFeelingScreen({ navigation }: any) {
       <View style={styles.topNav}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Home' }],
-          });
-        }}>
-          <Ionicons name="home" size={24} color="black" />
         </TouchableOpacity>
       </View>
 
@@ -85,73 +78,74 @@ export default function DescribeFeelingScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    paddingTop: spacing.xl,
+    paddingHorizontal: spacing.md,
+    backgroundColor: colors.white,
   },
   topNav: {
     position: 'absolute',
-    top: 40,
-    left: 20,
-    right: 20,
+    top: spacing.xl,
+    left: spacing.md,
+    right: spacing.md,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: typography.sizes.large,
+    fontWeight: typography.weights.bold,
+    marginBottom: spacing.sm,
     alignSelf: 'center',
+    color: colors.text.primary,
   },
   divider: {
     height: 2,
-    backgroundColor: '#ccc',
-    marginBottom: 20,
+    backgroundColor: colors.border,
+    marginBottom: spacing.md,
     width: '100%',
   },
   feelingsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 10,
+    gap: spacing.sm,
   },
   feelingButton: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    borderColor: colors.border,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     borderRadius: 20,
-    margin: 5,
+    margin: spacing.xs,
   },
   feelingButtonSelected: {
-    backgroundColor: '#6366f1',
-    borderColor: '#6366f1',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   feelingText: {
-    color: '#333',
+    color: colors.text.primary,
   },
   feelingTextSelected: {
-    color: '#fff',
+    color: colors.white,
   },
   showMore: {
     textAlign: 'center',
-    color: '#6366f1',
-    marginVertical: 20,
-    fontWeight: '600',
+    color: colors.primary,
+    marginVertical: spacing.md,
+    fontWeight: typography.weights.medium,
   },
-   button: {
+  button: {
     position: 'absolute',
-    bottom: 30,
-    left: 20,
-    right: 20,
-    backgroundColor: '#6366f1',
-    paddingVertical: 14,
+    bottom: spacing.xl,
+    left: spacing.md,
+    right: spacing.md,
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.md,
     borderRadius: 5,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
+    color: colors.white,
+    fontWeight: typography.weights.bold,
+    fontSize: typography.sizes.medium,
   },
 });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { colors, spacing, typography, commonStyles } from '../theme';
 
 const DeviceStatusScreen = () => {
   return (
@@ -18,29 +19,30 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    fontSize: typography.sizes.large,
+    fontWeight: typography.weights.bold,
+    marginBottom: spacing.md,
+    color: colors.text.primary,
   },
   status: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'gray',
-    marginBottom: 30,
+    fontSize: typography.sizes.medium,
+    fontWeight: typography.weights.bold,
+    color: colors.text.secondary,
+    marginBottom: spacing.xl,
   },
   button: {
-    backgroundColor: 'gray',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    backgroundColor: colors.text.secondary,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     borderRadius: 5,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: colors.white,
+    fontSize: typography.sizes.medium,
+    fontWeight: typography.weights.bold,
   },
 });
 

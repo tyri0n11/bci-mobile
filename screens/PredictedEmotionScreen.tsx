@@ -1,88 +1,132 @@
 // screens/PredictedEmotionScreen.tsx
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { colors, spacing, typography, commonStyles } from '../theme';
 
 export default function PredictedEmotionScreen({ navigation }: any) {
+  const [loading, setLoading] = useState(true);
+  const [dotCount, setDotCount] = useState(1);
+  const loadingOpacity = useRef(new Animated.Value(1)).current;
+  const resultOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Fade out loading
+      Animated.timing(loadingOpacity, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start(() => {
+        setLoading(false);
+        // Fade in result
+        Animated.timing(resultOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }).start();
+      });
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!loading) return;
+    const dotTimer = setInterval(() => {
+      setDotCount((prev) => (prev % 3) + 1);
+    }, 500);
+    return () => clearInterval(dotTimer);
+  }, [loading]);
+
   return (
     <View style={styles.container}>
-         <View style={styles.topNav}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
+      {loading && (
+        <Animated.View style={[styles.loadingContainer, { opacity: loadingOpacity, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2, backgroundColor: colors.white }]}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={{ marginTop: 20, color: colors.primary, fontWeight: 'bold' }}>
+            {`Analyzing your mood${'.'.repeat(dotCount)}`}
+          </Text>
+        </Animated.View>
+      )}
+      <Animated.View style={{ opacity: resultOpacity, flex: 1, width: '100%' }}>
+        <View style={styles.topNav}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={28} color="black" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.title}>Based on collected data,{"\n"}you're feeling</Text>
+          <Image source={require('../assets/unpleasant_mindly.png')} style={styles.image} />
+          <Text style={styles.emotion}>Unpleasant</Text>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('DescribeFeeling')}>
+          <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
-        <TouchableOpacity  onPress={() => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
-    }}>
-          <Ionicons name="home" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.title}>Based on collected data,</Text>
-      <Text style={styles.title}>you're feeling</Text>
-
-      <Image
-        style={styles.image}
-        source={{ uri: 'https://www.mollypotter.com/wp-content/uploads/2022/04/SadFace.jpg' }}
-      />
-
-      <Text style={styles.emotion}>Unpleasant</Text>
-
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('DescribeFeeling')}>
-        <Text style={styles.buttonText}>Next</Text>
-      </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-    topNav: {
+  topNav: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 40,
-    position: 'absolute',
-    top: 0,
-    zIndex: 10,
-  },
-
-container: {
-    flex: 1,
-    paddingTop: 100,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    paddingHorizontal: spacing.sm,
+    paddingTop: spacing.md,
+    marginBottom: spacing.sm,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: typography.sizes.large,
+    fontWeight: typography.weights.bold,
     textAlign: 'center',
+    marginBottom: spacing.md,
+    color: colors.text.primary,
+  },
+  emoji: {
+    fontSize: 80,
+    marginBottom: spacing.md,
   },
   image: {
-    width: 120,
-    height: 120,
-    marginVertical: 30,
+    width: 160,
+    height: 160,
+    marginVertical: spacing.xl,
   },
   emotion: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 50,
+    fontSize: typography.sizes.xlarge,
+    fontWeight: typography.weights.bold,
+    marginBottom: spacing.xl,
+    textAlign: 'center',
+    color: colors.text.primary,
   },
-   button: {
-    position: 'absolute',
-    bottom: 30,
-    left: 20,
-    right: 20,
-    backgroundColor: '#6366f1',
-    paddingVertical: 14,
+  button: {
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.xl,
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.md,
     borderRadius: 5,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
+    color: colors.white,
+    fontWeight: typography.weights.bold,
+    fontSize: typography.sizes.medium,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white,
   },
 });
 

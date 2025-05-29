@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { supabase } from './supabase';
+import Header from './components/shared/Header';
 // Screens
 import MainScreen from './screens/MainScreen';
 import ChatScreen from './screens/ChatScreen';
@@ -25,8 +25,10 @@ const Stack = createStackNavigator();
 
 function LogStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Log" component={LogScreen} />
+    <Stack.Navigator 
+      screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
+    >
+      <Stack.Screen name="LogEmotion" component={LogScreen} />
       <Stack.Screen name="PredictedEmotion" component={PredictedEmotionScreen} />
       <Stack.Screen name="DescribeFeeling" component={DescribeFeelingScreen} />
       <Stack.Screen name="Impact" component={ImpactScreen} />
@@ -36,7 +38,12 @@ function LogStack() {
 
 function AuthStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator 
+      screenOptions={{ 
+        headerShown: true,
+        header: () => <Header />
+      }}
+    >
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
     </Stack.Navigator>
@@ -67,32 +74,33 @@ function MainTabs() {
         tabBarActiveTintColor: '#6366f1',
         tabBarInactiveTintColor: 'gray',
         headerShown: true,
+        header: () => <Header />
       })}
     >
       <Tab.Screen 
         name="Home" 
         component={MainScreen} 
-        options={{ title: 'Home' }}
+        options={{ title: '' }}
       />
       <Tab.Screen 
         name="Chat" 
         component={ChatScreen} 
-        options={{ title: 'Direct' }}
+        options={{ title: '' }}
       />
       <Tab.Screen 
         name="Log" 
         component={LogStack} 
-        options={{ title: 'Record' }} 
+        options={{ title: '' }} 
       />
       <Tab.Screen 
         name="Notifications" 
         component={NotificationScreen} 
-        options={{ title: 'Notifications' }} 
+        options={{ title: '' }} 
       />
       <Tab.Screen 
         name="Settings" 
         component={SettingsScreen} 
-        options={{ title: 'Settings' }}
+        options={{ title: '' }}
       />
     </Tab.Navigator>
   );
