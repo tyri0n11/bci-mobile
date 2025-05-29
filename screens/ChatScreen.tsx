@@ -84,66 +84,62 @@ const ChatScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={110}
       >
-        <View style={styles.chatContainer}>
-          <FlatList
-            ref={flatListRef}
-            data={chatHistory}
-            renderItem={renderChatItem}
-            keyExtractor={item => item.id}
-            contentContainerStyle={styles.chatContent}
-            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-            onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
-            keyboardShouldPersistTaps="handled"
-          />
-        </View>
-        
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={message}
-            onChangeText={setMessage}
-            placeholder="Type your message..."
-            placeholderTextColor={colors.text.light}
-            multiline
-          />
-          <TouchableOpacity 
-            style={styles.sendButton} 
-            onPress={sendMessage}
-            disabled={message.trim() === ''}
-          >
-            <Ionicons 
-              name="send" 
-              size={24} 
-              color={message.trim() === '' ? colors.text.light : colors.primary} 
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={{ flex: 1 }}>
+            <FlatList
+              ref={flatListRef}
+              data={chatHistory}
+              renderItem={renderChatItem}
+              keyExtractor={item => item.id}
+              contentContainerStyle={styles.chatContent}
+              onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+              onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
+              keyboardShouldPersistTaps="handled"
             />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                value={message}
+                onChangeText={setMessage}
+                placeholder="Type your message..."
+                placeholderTextColor={colors.text.light}
+                multiline
+              />
+              <TouchableOpacity
+                style={styles.sendButton}
+                onPress={sendMessage}
+                disabled={message.trim() === ''}
+              >
+                <Ionicons
+                  name="send"
+                  size={24}
+                  color={message.trim() === '' ? colors.text.light : colors.primary}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
+
+const INPUT_HEIGHT = 56;
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.background,
   },
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  chatContainer: {
-    flex: 1,
-  },
   chatContent: {
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    paddingBottom: spacing.xl,
+    paddingTop: spacing.md,
+    paddingBottom: INPUT_HEIGHT + spacing.md, // ensure last message is visible above input
   },
   messageBubble: {
     maxWidth: '80%',
@@ -172,10 +168,18 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     padding: spacing.md,
     backgroundColor: colors.white,
     borderTopWidth: 1,
     borderTopColor: colors.border,
+    minHeight: INPUT_HEIGHT,
+    // Add shadow for iOS and elevation for Android
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 8,
   },
   input: {
     flex: 1,

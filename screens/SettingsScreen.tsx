@@ -1,23 +1,83 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Switch, Alert } from 'react-native';
+import React, { useState, useCallback, Suspense } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Switch, Alert, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card, Avatar, Divider } from 'react-native-paper';
 import DeviceStatusScreen from './DeviceStatusScreen';      
 import { useAuth } from '../contexts/AuthContext';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { colors, spacing, typography, commonStyles } from '../theme';
+import { colors, spacing, typography } from '../theme';
+import { ChangePasswordModal, PrivacyPoliciesModal, HelpSupportModal } from '../components/modals';
 
-const SettingsScreen = () => {
+// Fallback component for Suspense
+const ModalFallback = () => (
+  <View style={fallbackStyles.container}>
+    <ActivityIndicator size="large" color={colors.primary} />
+    <Text style={fallbackStyles.text}>Loading...</Text>
+  </View>
+);
+
+const fallbackStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  text: {
+    color: colors.white,
+    fontSize: typography.sizes.medium,
+    marginTop: spacing.sm,
+  },
+});
+
+const SettingsScreen = React.memo(() => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
+  const [isPoliciesModalVisible, setPoliciesModalVisible] = useState(false);
+  const [isHelpModalVisible, setHelpModalVisible] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const [dataSharing, setDataSharing] = useState(true);
+  
   const { signOut, user } = useAuth();
-  const handleConnectDevice = () => {
+  
+  const handleConnectDevice = useCallback(() => {
     setModalVisible(true);
-  };
+  }, []);
 
-  const handleLogout = () => {
+  const handleChangePassword = useCallback(() => {
+    setPasswordModalVisible(true);
+  }, []);
+
+  const handleShowPolicies = useCallback(() => {
+    setPoliciesModalVisible(true);
+  }, []);
+
+  const handleShowHelp = useCallback(() => {
+    setHelpModalVisible(true);
+  }, []);
+
+  const handleCloseDeviceModal = useCallback(() => {
+    setModalVisible(false);
+  }, []);
+
+  const handleClosePasswordModal = useCallback(() => {
+    setPasswordModalVisible(false);
+  }, []);
+
+  const handleClosePoliciesModal = useCallback(() => {
+    setPoliciesModalVisible(false);
+  }, []);
+
+  const handleCloseHelpModal = useCallback(() => {
+    setHelpModalVisible(false);
+  }, []);
+
+  const handleNotificationToggle = useCallback((value: boolean) => {
+    setNotificationsEnabled(value);
+  }, []);
+
+  const handleLogout = useCallback(() => {
     Alert.alert(
       "Logout",
       "Are you sure you want to logout?",
@@ -33,10 +93,14 @@ const SettingsScreen = () => {
         }
       ]
     );
-  };
+  }, [signOut]);
 
   return (
-    <KeyboardAwareScrollView style={styles.container}>
+    <KeyboardAwareScrollView 
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+    >
       <Card style={styles.profileCard}>
         <View style={styles.profileHeader}>
           <Avatar.Image 
@@ -63,59 +127,20 @@ const SettingsScreen = () => {
           </View>
           <Switch
             value={notificationsEnabled}
-            onValueChange={setNotificationsEnabled}
+            onValueChange={handleNotificationToggle}
             trackColor={{ false: "#d1d5db", true: "#c7d2fe" }}
             thumbColor={notificationsEnabled ? "#6366f1" : "#f4f3f4"}
           />
         </View>
         
         <Divider />
-        
-        <View style={styles.settingItem}>
-          <View style={styles.settingInfo}>
-            <Ionicons name="moon-outline" size={24} color="#6366f1" />
-            <Text style={styles.settingText}>Dark Mode</Text>
-          </View>
-          <Switch
-            value={darkModeEnabled}
-            onValueChange={setDarkModeEnabled}
-            trackColor={{ false: "#d1d5db", true: "#c7d2fe" }}
-            thumbColor={darkModeEnabled ? "#6366f1" : "#f4f3f4"}
-          />
-        </View>
-        
-        <Divider />
-        
-        <View style={styles.settingItem}>
-          <View style={styles.settingInfo}>
-            <Ionicons name="bluetooth-outline" size={24} color="#6366f1" />
-            <Text style={styles.settingText}>Connect Device</Text>
-          </View>
-          <TouchableOpacity onPress={handleConnectDevice}>
-            <Text style={styles.settingText}>Go</Text>
-          </TouchableOpacity>
-        </View>
 
-        <Divider />
-
-        <View style={styles.settingItem}>
-          <View style={styles.settingInfo}>
-            <Ionicons name="share-outline" size={24} color="#6366f1" />
-            <Text style={styles.settingText}>Data Sharing</Text>
-          </View>
-          {/* <Switch
-            value={dataSharing}
-            onValueChange={setDataSharing}
-            trackColor={{ false: "#d1d5db", true: "#c7d2fe" }}
-            thumbColor={dataSharing ? "#6366f1" : "#f4f3f4"}
-          /> */}
-        </View>
       </View>
 
       <View style={styles.settingsSection}>
         <Text style={styles.sectionTitle}>Account</Text>
         
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleChangePassword}>
           <View style={styles.menuInfo}>
             <Ionicons name="lock-closed-outline" size={24} color="#6366f1" />
             <Text style={styles.menuText}>Change Password</Text>
@@ -125,17 +150,17 @@ const SettingsScreen = () => {
         
         <Divider />
         
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleShowPolicies}>
           <View style={styles.menuInfo}>
             <Ionicons name="shield-checkmark-outline" size={24} color="#6366f1" />
-            <Text style={styles.menuText}>Privacy Settings</Text>
+            <Text style={styles.menuText}>Privacy & Policies</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
         </TouchableOpacity>
         
         <Divider />
         
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleShowHelp}>
           <View style={styles.menuInfo}>
             <Ionicons name="help-circle-outline" size={24} color="#6366f1" />
             <Text style={styles.menuText}>Help & Support</Text>
@@ -151,23 +176,47 @@ const SettingsScreen = () => {
 
       <Text style={styles.versionText}>Version 1.0.0</Text>
 
-      
+      {/* Device Connection Modal */}
       <Modal
         visible={isModalVisible}
         animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={handleCloseDeviceModal}
       >
         <DeviceStatusScreen />
         <TouchableOpacity
           style={styles.closeModalButton}
-          onPress={() => setModalVisible(false)}
+          onPress={handleCloseDeviceModal}
         >
           <Text style={styles.closeModalText}>Close</Text>
         </TouchableOpacity>
       </Modal>
+
+      {/* Modular Modal Components */}
+      <Suspense fallback={<ModalFallback />}>
+        <ChangePasswordModal
+          visible={isPasswordModalVisible}
+          onClose={handleClosePasswordModal}
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalFallback />}>
+        <PrivacyPoliciesModal
+          visible={isPoliciesModalVisible}
+          onClose={handleClosePoliciesModal}
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalFallback />}>
+        <HelpSupportModal
+          visible={isHelpModalVisible}
+          onClose={handleCloseHelpModal}
+        />
+      </Suspense>
     </KeyboardAwareScrollView>
   );
-};
+});
+
+SettingsScreen.displayName = 'SettingsScreen';
 
 const styles = StyleSheet.create({
   container: {
