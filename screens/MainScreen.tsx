@@ -1,20 +1,112 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, Dimensions, Platform } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
 import { Card } from '../components/shared/Card';
 import { colors, spacing, typography } from '../theme';
 import { ChartData, Insight, MoodData } from '../types';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useMood } from '../contexts/MoodContext';
 
 const screenWidth = Dimensions.get('window').width;
+const CARD_HORIZONTAL_PADDING = spacing.md * 2; // Card has padding on both sides
+const CHART_WIDTH = screenWidth - CARD_HORIZONTAL_PADDING - 16; // 16 for card's border radius/margin
+
+const getMoodColor = (score: number): string => {
+  // Round score to nearest 5
+  const roundedScore = Math.round(score / 5) * 5;
+  
+  // Map scores to mood colors
+  const scoreToColor: { [key: number]: string } = {
+    0: colors.mood.veryLow,
+    5: colors.mood.low,
+    10: colors.mood.lowMedium,
+    15: colors.mood.mediumLow,
+    20: colors.mood.medium,
+    25: colors.mood.mediumHigh,
+    30: colors.mood.highMedium,
+    35: colors.mood.high,
+    40: colors.mood.veryHigh,
+    45: colors.mood.excellent,
+    50: colors.mood.great,
+    55: colors.mood.superb,
+    60: colors.mood.amazing,
+    65: colors.mood.outstanding,
+    70: colors.mood.exceptional,
+    75: colors.mood.incredible,
+    80: colors.mood.perfect,
+    85: colors.mood.master,
+    90: colors.mood.legendary,
+    95: colors.mood.godlike,
+    100: colors.mood.ultimate,
+  };
+
+  return scoreToColor[roundedScore];
+};
+
+const getComponentColor = (baseScore: number, componentScore: number): string => {
+  const difference = Math.abs(baseScore - componentScore);
+  if (difference >= 20) {
+    return getMoodColor(componentScore);
+  }
+  return colors.primary;
+};
+
+function blendWithWhite(hex: string, percent: number) {
+  // percent: 0 (no blend), 1 (full white)
+  let c = hex.replace('#', '');
+  if (c.length === 3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
+  const r = Math.round((1 - percent) * parseInt(c.substring(0,2),16) + percent * 255);
+  const g = Math.round((1 - percent) * parseInt(c.substring(2,4),16) + percent * 255);
+  const b = Math.round((1 - percent) * parseInt(c.substring(4,6),16) + percent * 255);
+  return `rgb(${r},${g},${b})`;
+}
+
+function isDarkColor(hex: string) {
+  let c = hex.replace('#', '');
+  if (c.length === 3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
+  const r = parseInt(c.substring(0,2),16);
+  const g = parseInt(c.substring(2,4),16);
+  const b = parseInt(c.substring(4,6),16);
+  // Perceived brightness
+  const brightness = (r*0.299 + g*0.587 + b*0.114);
+  if (brightness > 100) return false; // rất sáng, luôn dùng chữ đen
+  return brightness < 210;
+}
 
 const MainScreen = () => {
+  const { moodScore, setMoodScore } = useMood();
   const [currentMood, setCurrentMood] = useState<MoodData>({
     mood: 'Calm',
-    score: 75,
+    score: moodScore,
     timestamp: new Date(),
   });
+  const [isDemo, setIsDemo] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setCurrentMood((m) => ({ ...m, score: moodScore }));
+  }, [moodScore]);
+
+  useEffect(() => {
+    if (isDemo) {
+      setCurrentMood((m) => ({ ...m, score: 0 }));
+      setMoodScore(0);
+      intervalRef.current && clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(() => {
+        setCurrentMood((prev) => {
+          let next = prev.score + 1;
+          if (next > 100) next = 0;
+          setMoodScore(next);
+          return { ...prev, score: next };
+        });
+      }, 40);
+    } else {
+      intervalRef.current && clearInterval(intervalRef.current);
+    }
+    return () => {
+      intervalRef.current && clearInterval(intervalRef.current);
+    };
+  }, [isDemo, setMoodScore]);
 
   const chartData: ChartData = {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -29,53 +121,78 @@ const MainScreen = () => {
   };
 
   const insights: Insight[] = [
-    { title: 'Sleep Quality', value: 'Good', category: 'sleep' },
-    { title: 'Stress Level', value: 'Low', category: 'stress' },
-    { title: 'Activity Level', value: 'Moderate', category: 'activity' },
+    { title: 'Sleep Quality', value: 'Good', category: 'sleep', score: 80 },
+    { title: 'Stress Level', value: 'Low', category: 'stress', score: 85 },
+    { title: 'Activity Level', value: 'Moderate', category: 'activity', score: 65 },
   ];
 
   const chartConfig = {
     backgroundGradientFrom: colors.white,
     backgroundGradientTo: colors.white,
     decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(99, 102, 241, ${opacity})`,
+    color: (opacity = 1) => getMoodColor(currentMood.score),
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     style: {
       borderRadius: 16
     },
     propsForDots: {
-      r: '6',
-      strokeWidth: '2',
-      stroke: colors.primary
-    }
+      r: '4',
+      strokeWidth: '1',
+      stroke: getMoodColor(currentMood.score),
+      fill: getMoodColor(currentMood.score),
+    },
+    fillShadowGradient: blendWithWhite(getMoodColor(currentMood.score), 0.7),
+    fillShadowGradientOpacity: 1,
   };
 
+  const moodBg = blendWithWhite(getMoodColor(currentMood.score), 0.7); // 70% trắng
+  const moodTextColor = isDarkColor(getMoodColor(currentMood.score)) ? '#fff' : colors.text.primary;
+
+  const bgColor = blendWithWhite(getMoodColor(moodScore), 0.9); // 90% trắng
+
   return (
-    <KeyboardAwareScrollView style={styles.container}>
-      <Card>
-        <Text style={styles.cardTitle}>Current State of Mind</Text>
+    <KeyboardAwareScrollView style={[styles.container, { backgroundColor: bgColor }]}>
+      <Card style={{
+        ...styles.moodCard,
+        backgroundColor: moodBg,
+        borderRadius: 24,
+        ...(Platform.OS === 'android'
+          ? { elevation: 6 }
+          : { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 8 })
+      }}>
+        <Text style={[styles.cardTitle, { color: moodTextColor }]}>Current State of Mind</Text>
         <View style={styles.moodIndicator}>
-          <Text style={styles.moodText}>{currentMood.mood}</Text>
+          <Text style={[styles.moodText, { color: moodTextColor }]}>{currentMood.mood}</Text>
           <View style={styles.moodScoreContainer}>
-            <Text style={styles.moodScore}>{currentMood.score}</Text>
-            <Text style={styles.moodScoreLabel}>/100</Text>
+            <Text style={[styles.moodScore, { color: moodTextColor }]}>{currentMood.score}</Text>
+            <Text style={[styles.moodScoreLabel, { color: moodTextColor } ]}>/100</Text>
           </View>
         </View>
-        <Text style={styles.moodDescription}>
+        <Text style={[styles.moodDescription, { color: moodTextColor, opacity: 0.85 }] }>
           Your mood has been consistently positive over the past week. Keep up the good work!
         </Text>
+        <View style={{ alignItems: 'center', marginTop: 12 }}>
+          <Text
+            style={{ color: isDemo ? colors.success : colors.primary, fontWeight: 'bold', marginBottom: 4 }}
+            onPress={() => setIsDemo((d) => !d)}
+          >
+            {isDemo ? 'Turn off Demo' : 'Turn on Demo'}
+          </Text>
+        </View>
       </Card>
 
       <Card>
         <Text style={styles.cardTitle}>Mood History</Text>
-        <LineChart
-          data={chartData}
-          width={screenWidth - 40}
-          height={220}
-          chartConfig={chartConfig}
-          bezier
-          style={styles.chart}
-        />
+        <View style={styles.chartContainer}>
+          <LineChart
+            data={chartData}
+            width={CHART_WIDTH}
+            height={220}
+            chartConfig={chartConfig}
+            bezier
+            style={styles.chart}
+          />
+        </View>
         <Text style={styles.chartDescription}>
           Your weekly mood trend shows improvement. Your highest score was on Saturday.
         </Text>
@@ -86,7 +203,9 @@ const MainScreen = () => {
         {insights.map((insight, index) => (
           <View key={insight.title} style={styles.insightItem}>
             <Text style={styles.insightTitle}>{insight.title}</Text>
-            <Text style={styles.insightValue}>{insight.value}</Text>
+            <Text style={[styles.insightValue, { color: getComponentColor(currentMood.score, insight.score) }]}>
+              {insight.value}
+            </Text>
           </View>
         ))}
       </Card>
@@ -115,7 +234,6 @@ const styles = StyleSheet.create({
   moodText: {
     fontSize: typography.sizes.xlarge,
     fontWeight: typography.weights.bold,
-    color: colors.primary,
   },
   moodScoreContainer: {
     flexDirection: 'row',
@@ -124,7 +242,6 @@ const styles = StyleSheet.create({
   moodScore: {
     fontSize: typography.sizes.xxlarge,
     fontWeight: typography.weights.bold,
-    color: colors.primary,
   },
   moodScoreLabel: {
     fontSize: typography.sizes.medium,
@@ -135,13 +252,19 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     marginTop: spacing.xs,
   },
+  chartContainer: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    alignItems: 'center',
+  },
   chart: {
-    marginVertical: spacing.sm,
+    width: CHART_WIDTH,
+    marginLeft: -36,
     borderRadius: 16,
   },
   chartDescription: {
     color: colors.text.secondary,
-    marginTop: spacing.xs,
+    marginTop: spacing.sm,
   },
   insightItem: {
     flexDirection: 'row',
@@ -158,6 +281,11 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.medium,
     fontWeight: typography.weights.bold,
     color: colors.primary,
+  },
+  moodCard: {
+    padding: spacing.lg,
+    marginBottom: spacing.md,
+    borderWidth: 0,
   },
 });
 

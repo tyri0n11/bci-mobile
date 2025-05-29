@@ -7,6 +7,7 @@ import InitialStep from './emotion-log/InitialStep';
 import EmotionStep from './emotion-log/EmotionStep';
 import FeelingsStep from './emotion-log/FeelingsStep';
 import ImpactStep from './emotion-log/ImpactStep';
+import { addNotification as addLocalNotification } from '../utils/notificationOrm';
 
 type Emotion = {
   name: string;
@@ -165,7 +166,14 @@ export default function EmotionLogScreen({ navigation }: any) {
   const handleStart = () => {
     setCurrentStep('emotion');
   };
-  const handleDone = () => {
+  const handleDone = async () => {
+    await addLocalNotification({
+      id: Date.now().toString(),
+      title: 'Mood Logged',
+      message: `You just logged your mood: ${selectedEmotion?.name}`,
+      timestamp: new Date().toISOString(),
+      type: 'mood_log',
+    });
     resetSession();
     setCurrentStep('initial');
     navigation.navigate('Home');

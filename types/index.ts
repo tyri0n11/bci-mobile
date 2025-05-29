@@ -15,6 +15,7 @@ export interface Insight {
   title: string;
   value: string;
   category: 'sleep' | 'stress' | 'activity' | 'other';
+  score: number;
 }
 
 export interface ChartData {

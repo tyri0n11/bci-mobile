@@ -12,7 +12,7 @@ const SettingsScreen = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const [dataSharing, setDataSharing] = useState(true);
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const handleConnectDevice = () => {
     setModalVisible(true);
   };
@@ -44,8 +44,8 @@ const SettingsScreen = () => {
             source={require('../assets/grateful_mindly.png')} 
           />
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>Hello Thuan</Text>
-            <Text style={styles.profileEmail}>ntthuan@senior.dev</Text>
+            <Text style={styles.profileName}>{user?.user_metadata.name || 'Mindly'}</Text>
+            <Text style={styles.profileEmail}>{user?.email}</Text>
           </View>
         </View>
         <TouchableOpacity style={styles.editProfileButton}>

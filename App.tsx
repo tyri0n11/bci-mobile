@@ -18,6 +18,7 @@ import EmotionLogScreen from './screens/EmotionLogScreen';
 import NotificationScreen from './screens/NotificationScreen';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
+import { MoodProvider } from './contexts/MoodContext';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -130,6 +131,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
+        <MoodProvider>
         <BluetoothProvider>
           <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
@@ -138,6 +140,7 @@ export default function App() {
             <AppContent />
           </KeyboardAvoidingView>
         </BluetoothProvider>
+        </MoodProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );

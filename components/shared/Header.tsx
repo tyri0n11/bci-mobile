@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '../../theme';
 import { useBluetooth } from '../../contexts/BluetoothContext';
+import { useMood } from '../../contexts/MoodContext';
 
 // Dummy devices for demonstration
 const dummyDevices = [
@@ -12,6 +13,35 @@ const dummyDevices = [
   { id: '3', name: 'Mindly Device 3' },
 ];
 
+const getMoodColor = (score: number): string => {
+  const roundedScore = Math.round(score / 5) * 5;
+  const colors = require('../../theme').colors;
+  const scoreToColor: { [key: number]: string } = {
+    0: colors.mood.veryLow,
+    5: colors.mood.low,
+    10: colors.mood.lowMedium,
+    15: colors.mood.mediumLow,
+    20: colors.mood.medium,
+    25: colors.mood.mediumHigh,
+    30: colors.mood.highMedium,
+    35: colors.mood.high,
+    40: colors.mood.veryHigh,
+    45: colors.mood.excellent,
+    50: colors.mood.great,
+    55: colors.mood.superb,
+    60: colors.mood.amazing,
+    65: colors.mood.outstanding,
+    70: colors.mood.exceptional,
+    75: colors.mood.incredible,
+    80: colors.mood.perfect,
+    85: colors.mood.master,
+    90: colors.mood.legendary,
+    95: colors.mood.godlike,
+    100: colors.mood.ultimate,
+  };
+  return scoreToColor[roundedScore] || colors.primary;
+};
+
 export default function Header() {
   const {
     connectionStatus,
@@ -19,7 +49,9 @@ export default function Header() {
     setModalVisible,
     startScan,
     selectDevice,
+    disconnect,
   } = useBluetooth();
+  const { moodScore } = useMood();
 
   const getStatusColor = () => {
     switch (connectionStatus) {
@@ -83,6 +115,15 @@ export default function Header() {
           <View style={styles.modalContent}>
             <Ionicons name="checkmark-circle" size={48} color={colors.primary} />
             <Text style={styles.modalSubtitle}>Successfully connected!</Text>
+            <TouchableOpacity 
+              style={styles.disconnectButton}
+              onPress={() => {
+                disconnect();
+                setModalVisible(false);
+              }}
+            >
+              <Text style={styles.disconnectButtonText}>Disconnect</Text>
+            </TouchableOpacity>
           </View>
         );
     }
@@ -91,7 +132,7 @@ export default function Header() {
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea}>
       <View style={styles.header}>
-        <Text style={styles.title}>Mindly</Text>
+        <Text style={[styles.title, { color: getMoodColor(moodScore) }]}>Mindly</Text>
         <TouchableOpacity 
           style={styles.connectButton}
           onPress={() => {
@@ -157,7 +198,7 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -216,6 +257,18 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     color: colors.primary,
+    fontSize: typography.sizes.medium,
+    fontWeight: typography.weights.bold,
+  },
+  disconnectButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    borderRadius: 8,
+    marginTop: spacing.md,
+  },
+  disconnectButtonText: {
+    color: colors.white,
     fontSize: typography.sizes.medium,
     fontWeight: typography.weights.bold,
   },
