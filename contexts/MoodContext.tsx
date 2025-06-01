@@ -8,7 +8,7 @@ interface MoodContextType {
 const MoodContext = createContext<MoodContextType | undefined>(undefined);
 
 export const MoodProvider = ({ children }: { children: ReactNode }) => {
-  const [moodScore, setMoodScore] = useState(10);
+  const [moodScore, setMoodScore] = useState(68);
   return (
     <MoodContext.Provider value={{ moodScore, setMoodScore }}>
       {children}

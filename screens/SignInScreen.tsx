@@ -82,28 +82,6 @@ const SignInScreen = ({ navigation }: any) => {
     }
   };
 
-  const handleForgotPassword = async (email: string) => {
-    if (!email) {
-      Alert.alert('Error', 'Please enter your email address');
-      return;
-    }
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'bci-mobile://reset-password',
-      });
-      if (error) {
-        Alert.alert('Error', error.message);
-      } else {
-        Alert.alert(
-          'Password Reset',
-          'If an account exists with this email, you will receive a password reset link.'
-        );
-      }
-    } catch (error: any) {
-      Alert.alert('Error', error.message);
-    }
-  };
-
   const animateInput = (inputScale: Animated.Value) => {
     Animated.sequence([
       Animated.timing(inputScale, {
@@ -256,7 +234,7 @@ const SignInScreen = ({ navigation }: any) => {
 
               <TouchableOpacity
                 style={styles.forgotPassword}
-                onPress={() => handleForgotPassword(values.email)}
+                onPress={() => navigation.navigate('ForgotPassword')}
                 disabled={loading}
               >
                 <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
@@ -283,7 +261,7 @@ const SignInScreen = ({ navigation }: any) => {
                   style={styles.socialButton}
                   textStyle={styles.socialButtonText}
                   disabled={loading}
-                  icon={<Ionicons name="logo-google" size={24} color={colors.text.primary} style={styles.socialIcon} />}
+                  icon={<Ionicons name="logo-google" size={24} color={colors.primary} style={styles.socialIcon} />}
                 />
                 <Button
                   title="Sign in with Facebook"
@@ -291,7 +269,7 @@ const SignInScreen = ({ navigation }: any) => {
                   style={styles.socialButton}
                   textStyle={styles.socialButtonText}
                   disabled={loading}
-                  icon={<Ionicons name="logo-facebook" size={24} color={colors.text.primary} style={styles.socialIcon} />}
+                  icon={<Ionicons name="logo-facebook" size={24} color={colors.primary} style={styles.socialIcon} />}
                 />
               </Animated.View>
 

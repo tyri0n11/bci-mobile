@@ -81,8 +81,10 @@ const ImpactStep: React.FC<ImpactStepProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: spacing.xl + spacing.md,
     backgroundColor: colors.background,
     padding: spacing.md,
+    justifyContent: 'center',
   },
   title: {
     fontSize: typography.sizes.xlarge,

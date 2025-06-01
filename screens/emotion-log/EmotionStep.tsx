@@ -81,6 +81,15 @@ const EmotionStep: React.FC<EmotionStepProps> = ({
       <View style={[styles.container, { backgroundColor: selectedEmotion?.backgroundColor }]}> 
         {loading && (
           <Animated.View style={[styles.loadingContainer, { opacity: loadingOpacity }]}> 
+            <Text style={{
+              fontSize: typography.sizes.large,
+              color: colors.text.secondary,
+              textAlign: 'center',
+              marginBottom: 8,
+              fontWeight: typography.weights.medium,
+            }}>
+              AI is analyzing your state of mind
+            </Text>
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', height: 60 }}>
               {dotAnims.map((anim, i) => (
                 <Animated.Text

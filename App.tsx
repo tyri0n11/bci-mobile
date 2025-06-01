@@ -53,6 +53,7 @@ function AuthStack() {
       }}
     >
       <Stack.Screen name="SignIn" component={SignInScreen} />
+      <Stack.Screen name="ForgotPassword" component={require('./screens/ForgotPasswordScreen').default} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
     </Stack.Navigator>
   );
@@ -83,7 +84,9 @@ function MainTabs() {
         component={LogStack} 
         options={{ 
           title: '',
-          lazy: false // This ensures LogStack is always mounted
+          lazy: false, // This ensures LogStack is always mounted
+          headerShown: false, 
+          tabBarHideOnKeyboard: true,
         }} 
       />
       <Tab.Screen 

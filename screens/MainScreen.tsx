@@ -221,7 +221,7 @@ const MainScreen = () => {
           </Text>
         </TouchableOpacity>
       </Card>
-      <Card>
+      <Card style={styles.card}>
         <Text style={styles.cardTitle}>EEG Signal</Text>
         <EEGChart width={350} height={180} isConnected={connectionStatus === 'connected'} />
       </Card>
@@ -243,7 +243,7 @@ const MainScreen = () => {
         </Text>
       </Card>
 
-      <Card>
+      <Card style={styles.card}>
         <Text style={styles.cardTitle}>Insights</Text>
         {insights.map((insight, index) => (
           <View key={insight.title} style={styles.insightItem}>
@@ -263,6 +263,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     padding: spacing.md,
+  },
+  card: {
+    marginBottom: spacing.md,
   },
   cardTitle: {
     fontSize: typography.sizes.large,

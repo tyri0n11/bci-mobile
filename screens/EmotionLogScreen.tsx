@@ -44,7 +44,7 @@ const emotions: Emotion[] = [
     image: require('../assets/slightly_pleasant_mindly.png'),
     backgroundColor: '#ffeb3b',
     textColor: '#333',
-    buttonColor: '#fbc02d',
+    buttonColor: colors.black,
   },
   {
     name: 'Very Pleasant',
@@ -56,10 +56,10 @@ const emotions: Emotion[] = [
 ];
 
 const feelingsList = [
-  'Angry', 'Anxious', 'Scared',
-  'Overwhelmed', 'Ashamed', 'Embarrassed',
-  'Annoyed', 'Stressed', 'Worried', 'Sad',
-  'Lonely', 'Frustrated', 'Hopeless', 'Helpless', 'Guilty'
+  'Grateful', 'Hopeful', 'Excited',
+  'Inspired', 'Confident', 'Proud',
+  'Calm', 'Content', 'Energized', 'Happy',
+  'Loved', 'Motivated', 'Peaceful', 'Optimistic', 'Joyful'
 ];
 
 const impactList = [
@@ -123,7 +123,7 @@ export default function EmotionLogScreen({ navigation }: any) {
 
       setLoading(true);
       const randomIndex = Math.floor(Math.random() * emotions.length);
-      setSelectedEmotion(emotions[randomIndex]);
+      setSelectedEmotion(emotions[3]);
 
       const timer = setTimeout(() => {
         Animated.timing(loadingOpacity, {
@@ -279,6 +279,7 @@ export default function EmotionLogScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: spacing.xl + spacing.md,
     backgroundColor: colors.white,
   },
   content: {
