@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, TextInput, Animated, Easing } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { Ionicons } from '@expo/vector-icons';
 import Button from '../components/shared/Button';
 import CheckBox from '../components/shared/CheckBox';
 import { colors, spacing, typography } from '../theme';
@@ -22,6 +23,7 @@ const SignInScreen = ({ navigation }: any) => {
   const { signIn } = useAuth();
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Animation values
   const formSlide = useRef(new Animated.Value(50)).current;
@@ -190,24 +192,37 @@ const SignInScreen = ({ navigation }: any) => {
 
               <Text style={styles.inputLabel}>Password</Text>
               <Animated.View style={{ transform: [{ scale: passwordInputScale }] }}>
-                <TextInput
-                  style={[
-                    styles.input,
-                    touched.password && errors.password && styles.inputError,
-                    touched.password && !errors.password && styles.inputFocused,
-                  ]}
-                  placeholder="Password"
-                  placeholderTextColor={colors.text.secondary}
-                  value={values.password}
-                  onChangeText={handleChange('password')}
-                  onFocus={() => {
-                    animateInput(passwordInputScale);
-                    setFieldTouched('password', true);
-                  }}
-                  onBlur={() => handleBlur('password')}
-                  secureTextEntry
-                  editable={!loading}
-                />
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      styles.passwordInput,
+                      touched.password && errors.password && styles.inputError,
+                      touched.password && !errors.password && styles.inputFocused,
+                    ]}
+                    placeholder="Password"
+                    placeholderTextColor={colors.text.secondary}
+                    value={values.password}
+                    onChangeText={handleChange('password')}
+                    onFocus={() => {
+                      animateInput(passwordInputScale);
+                      setFieldTouched('password', true);
+                    }}
+                    onBlur={() => handleBlur('password')}
+                    secureTextEntry={!showPassword}
+                    editable={!loading}
+                  />
+                  <TouchableOpacity
+                    style={styles.passwordToggle}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Ionicons
+                      name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                      size={24}
+                      color={colors.text.secondary}
+                    />
+                  </TouchableOpacity>
+                </View>
               </Animated.View>
               {touched.password && errors.password && (
                 <Animated.Text 
@@ -268,6 +283,7 @@ const SignInScreen = ({ navigation }: any) => {
                   style={styles.socialButton}
                   textStyle={styles.socialButtonText}
                   disabled={loading}
+                  icon={<Ionicons name="logo-google" size={24} color={colors.text.primary} style={styles.socialIcon} />}
                 />
                 <Button
                   title="Sign in with Facebook"
@@ -275,6 +291,7 @@ const SignInScreen = ({ navigation }: any) => {
                   style={styles.socialButton}
                   textStyle={styles.socialButtonText}
                   disabled={loading}
+                  icon={<Ionicons name="logo-facebook" size={24} color={colors.text.primary} style={styles.socialIcon} />}
                 />
               </Animated.View>
 
@@ -415,6 +432,9 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.medium,
   },
   socialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: colors.white,
     borderRadius: 8,
     marginBottom: spacing.md,
@@ -457,6 +477,24 @@ const styles = StyleSheet.create({
   },
   socialButtonsContainer: {
     width: '100%',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  passwordInput: {
+    flex: 1,
+    paddingRight: 40, // just enough for the icon
+  },
+  passwordToggle: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    padding: 12,
+  },
+  socialIcon: {
+    marginRight: 8,
   },
 });
 
