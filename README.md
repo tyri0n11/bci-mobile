@@ -1,4 +1,4 @@
-# BCI Mobile - Brain-Computer Interface Mood Tracking App
+![image](https://github.com/user-attachments/assets/0684488e-e219-4ce2-8d03-e3d577b066a4)# BCI Mobile - Brain-Computer Interface Mood Tracking App
 ![image](https://github.com/user-attachments/assets/27b61bdd-a8d7-4870-befc-c4a6d23be203)
 ![image](https://github.com/user-attachments/assets/ff4f19e9-06dd-45c5-8b31-67f828bd35ee)
 ![image](https://github.com/user-attachments/assets/39bca5ca-76b5-4b31-9379-18c99dc725af)
@@ -8,6 +8,14 @@
 ![image](https://github.com/user-attachments/assets/aba4ea37-bc70-4980-8e63-47f8aad66057)
 ![image](https://github.com/user-attachments/assets/2d826bcf-7c45-4b1e-85ea-24fba12c8992)
 ![image](https://github.com/user-attachments/assets/e104a9d1-22c6-4031-a0aa-c3a913372dbc)
+![image](https://github.com/user-attachments/assets/7d518d7d-b0e5-4bbf-a654-342f91d687d7)
+![image](https://github.com/user-attachments/assets/7c460af3-9d59-4a30-916a-fbb9a2e03a86)
+![image](https://github.com/user-attachments/assets/8f84276b-a53c-4ef4-b33f-f046925a4fbf)
+![image](https://github.com/user-attachments/assets/329d0225-21dc-4041-a67c-9f6c7888f23d)
+![image](https://github.com/user-attachments/assets/fd3f421b-b861-4477-9c38-0f51e02213f4)
+![image](https://github.com/user-attachments/assets/63caea4b-a5fa-407a-aed6-a49a4455b3d0)
+![image](https://github.com/user-attachments/assets/dec91bbc-c510-4815-a117-bd9daf00ce96)
+![image](https://github.com/user-attachments/assets/0247d435-7335-4d1a-8bc4-869f81cfa4c7)
 
 
 ## 🧠 About
