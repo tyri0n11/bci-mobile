@@ -1,9 +1,9 @@
-![image](https://github.com/user-attachments/assets/e53763fe-de90-4bae-be93-20cd59c4ed5d)# BCI Mobile - Brain-Computer Interface Mood Tracking App
-
+# BCI Mobile - Brain-Computer Interface Mood Tracking App
 ![image](https://github.com/user-attachments/assets/27b61bdd-a8d7-4870-befc-c4a6d23be203)
 ![image](https://github.com/user-attachments/assets/ff4f19e9-06dd-45c5-8b31-67f828bd35ee)
 ![image](https://github.com/user-attachments/assets/39bca5ca-76b5-4b31-9379-18c99dc725af)
 ![image](https://github.com/user-attachments/assets/88797708-f039-45e2-9dad-952dacee756d)
+![image](https://github.com/user-attachments/assets/e53763fe-de90-4bae-be93-20cd59c4ed5d)
 ![image](https://github.com/user-attachments/assets/fb509de5-2a2c-48d8-a599-6412ddf5db6e)
 ![image](https://github.com/user-attachments/assets/aba4ea37-bc70-4980-8e63-47f8aad66057)
 ![image](https://github.com/user-attachments/assets/2d826bcf-7c45-4b1e-85ea-24fba12c8992)
