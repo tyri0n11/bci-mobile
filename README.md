@@ -8,7 +8,6 @@
 ![image](https://github.com/user-attachments/assets/aba4ea37-bc70-4980-8e63-47f8aad66057)
 ![image](https://github.com/user-attachments/assets/2d826bcf-7c45-4b1e-85ea-24fba12c8992)
 ![image](https://github.com/user-attachments/assets/e104a9d1-22c6-4031-a0aa-c3a913372dbc)
-![image](https://github.com/user-attachments/assets/dbe87f08-d245-4447-a390-20122a4019f2)
 
 
 ## 🧠 About
